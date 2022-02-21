@@ -7,6 +7,7 @@ class SignUp extends Component {
         passwordBis: '',
         firstName: 'James',
         lastName: 'Bond',
+        flash: '',
     };
 
     updateEmailField(event) {
@@ -32,12 +33,41 @@ class SignUp extends Component {
     handleSubmit(event) {
         event.preventDefault();
         console.log("A name was submitted", this.state);
+
+        if (this.state.password !== this.state.passwordBis) {
+            this.setState({ "flash": "Les mots de passe sont differents" })
+            return;
+        }
+
+        this.fetchSignUp();
+    }
+
+    fetchSignUp() {
+        fetch("/auth/signup",
+            {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }),
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName
+                }),
+            })
+            .then(res => res.json())
+            .then(
+                res => this.setState({ "flash": res.flash }),
+                err => this.setState({ "flash": err.flash })
+            );
     }
 
     render() {
         return (
             <div>
                 <h1>{JSON.stringify(this.state)}</h1>
+                {this.state.flash && <h2>{this.state.flash}</h2>}
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <div>
                         <label htmlFor="email">Email</label>
