@@ -1,41 +1,26 @@
 import React, { Component } from 'react';
+import { Button, Stack, Snackbar, TextField } from '@mui/material';
 
 class SignUp extends Component {
     state = {
-        email: this.props.email,
+        email: '',
         password: '',
         passwordBis: '',
-        firstName: 'James',
-        lastName: 'Bond',
+        firstName: '',
+        lastName: '',
         flash: '',
     };
 
-    updateEmailField(event) {
-        this.setState({ email: event.target.value });
-    }
-
-    updatePasswordField(event) {
-        this.setState({ password: event.target.value });
-    }
-
-    updatePasswordBisField(event) {
-        this.setState({ passwordBis: event.target.value });
-    }
-
-    updateFirstNameField(event) {
-        this.setState({ firstName: event.target.value });
-    }
-
-    updateLastNameField(event) {
-        this.setState({ lastName: event.target.value });
+    handleInputChange(event) {
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
     }
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log("A name was submitted", this.state);
 
         if (this.state.password !== this.state.passwordBis) {
-            this.setState({ "flash": "Les mots de passe sont differents" })
+            this.setState({ "flash": "Passwords are different" })
             return;
         }
 
@@ -66,60 +51,54 @@ class SignUp extends Component {
     render() {
         return (
             <div>
-                <h1>{JSON.stringify(this.state)}</h1>
-                {this.state.flash && <h2>{this.state.flash}</h2>}
+                <h1>Sign up</h1>
+                <Snackbar open={this.state.flash} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} message={this.state.flash} />
                 <form onSubmit={this.handleSubmit.bind(this)}>
-                    <div>
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
+                    <Stack spacing={2} sx={{ width: '90%', maxWidth: 400 }}>
+                        <TextField
+                            label="Email"
                             name="email"
-                            id="email"
+                            type="email"
+                            variant="standard"
                             value={this.state.email}
-                            onChange={this.updateEmailField.bind(this)}
+                            onChange={this.handleInputChange.bind(this)}
                         />
-                    </div>
-                    <div>
-                        <label htmlFor="password">Mot de passe</label>
-                        <input
-                            type="password"
+                        <TextField
+                            label="Password"
                             name="password"
-                            id="password"
-                            value={this.state.password}
-                            onChange={this.updatePasswordField.bind(this)}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="passwordBis">Confirmation</label>
-                        <input
                             type="password"
+                            variant="standard"
+                            value={this.state.password}
+                            onChange={this.handleInputChange.bind(this)}
+                        />
+                        <TextField
+                            label="Confirm Password"
                             name="passwordBis"
-                            id="passwordBis"
+                            type="password"
+                            variant="standard"
                             value={this.state.passwordBis}
-                            onChange={this.updatePasswordBisField.bind(this)}
+                            onChange={this.handleInputChange.bind(this)}
                         />
-                    </div>
-                    <div>
-                        <label htmlFor="firstName">Prénom</label>
-                        <input
-                            type="text"
+                        <TextField
+                            label="First Name"
                             name="firstName"
-                            id="firstName"
-                            value={this.state.firstName}
-                            onChange={this.updateFirstNameField.bind(this)}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="lastName">Nom</label>
-                        <input
                             type="text"
-                            name="lastName"
-                            id="lastName"
-                            value={this.state.lastName}
-                            onChange={this.updateLastNameField.bind(this)}
+                            variant="standard"
+                            value={this.state.firstName}
+                            onChange={this.handleInputChange.bind(this)}
                         />
-                    </div>
-                    <button type="submit">Envoyer</button>
+                        <TextField
+                            label="Last Name"
+                            name="lastName"
+                            type="text"
+                            variant="standard"
+                            value={this.state.lastName}
+                            onChange={this.handleInputChange.bind(this)}
+                        />
+                        <Button variant="standard" type="submit">
+                            Submit
+                        </Button>
+                    </Stack>
                 </form>
             </div>
         );
