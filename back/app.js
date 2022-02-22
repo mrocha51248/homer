@@ -5,7 +5,9 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-var LocalStrategy = require('passport-local');
+const LocalStrategy = require('passport-local');
+const JWTStrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
 
 const app = express();
 const authRouter = require('./routes/auth/auth');
@@ -21,6 +23,12 @@ app.get('/', (req, res) => {
 })
 
 app.use('/auth', authRouter);
+
+app.get("/profile", passport.authenticate('jwt',
+    { session: false }),
+    function (req, res) {
+        res.send(req.user);
+    });
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -48,10 +56,20 @@ passport.use(new LocalStrategy(
                 return;
             }
             if (results.length < 1 || !bcrypt.compareSync(password, results[0].password)) {
-                cb(null, false, { message: "Incorrect email ou password."});
+                cb(null, false, { message: "Incorrect email ou password." });
                 return;
             }
             cb(null, results[0]);
         });
+    }
+));
+
+passport.use(new JWTStrategy(
+    {
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: 'your_jwt_secret'
+    },
+    function (jwtPayload, cb) {
+        return cb(null, jwtPayload);
     }
 ));
