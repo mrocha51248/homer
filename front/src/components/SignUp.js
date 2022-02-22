@@ -44,7 +44,7 @@ class SignUp extends Component {
             })
             .then(res => res.json())
             .then(
-                res => { this.setState({ redirect: "/" }); this.setState({ "flash": res.flash }); },
+                res => { if (res.ok) this.setState({ redirect: "/" }); this.setState({ "flash": res.flash }); },
                 err => this.setState({ "flash": err.flash })
             );
     }
