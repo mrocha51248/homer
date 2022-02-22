@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Divider, Link, List, ListItem, ListItemText } from '@mui/material';
 
 class Profile extends Component {
     state = {
@@ -12,17 +13,25 @@ class Profile extends Component {
 
     render() {
         return (
-            <List>
-                <ListItem>
-                    <ListItemText primary="Email" secondary={this.state.profile.email} />
-                </ListItem>
-                <ListItem>
-                    <ListItemText primary="First Name" secondary={this.state.profile.firstName} />
-                </ListItem>
-                <ListItem>
-                    <ListItemText primary="Last Name" secondary={this.state.profile.lastName} />
-                </ListItem>
-            </List>
+            <div>
+                <List>
+                    <ListItem>
+                        <ListItemText primary="Email" secondary={this.state.profile.email} />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemText primary="First Name" secondary={this.state.profile.firstName} />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemText primary="Last Name" secondary={this.state.profile.lastName} />
+                    </ListItem>
+                </List>
+                <Divider sx={{ m: 2 }} />
+                <Box>
+                    <Link underline="hover" component={RouterLink} to="/signin">
+                        Disconnect
+                    </Link>
+                </Box>
+            </div>
         );
     }
 }
