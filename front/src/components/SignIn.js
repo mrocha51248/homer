@@ -31,11 +31,17 @@ class SignIn extends Component {
                     password: this.state.password,
                 }),
             })
-            .then(res => res.json())
-            .then(
-                res => { if (res.ok) this.setState({ redirect: "/profile" }); this.setState({ "flash": res.flash }); },
-                err => this.setState({ "flash": err.flash })
-            );
+            .then(res => {
+                if (res.ok) this.setState({ redirect: "/profile" });
+                const isJson = res.headers.get('content-type')?.includes('application/json');
+                if (!isJson) throw new Error(res.statusText);
+                return res.json();
+            })
+            .then(json => {
+                if (json.flash) this.setState({ "flash": json.flash });
+                else if (json.user) this.setState({ "flash": "You have signed in" });
+            })
+            .catch(err => this.setState({ "flash": err.toString() }));
     }
 
     render() {

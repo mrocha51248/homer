@@ -42,11 +42,16 @@ class SignUp extends Component {
                     lastName: this.state.lastName
                 }),
             })
-            .then(res => res.json())
-            .then(
-                res => { if (res.ok) this.setState({ redirect: "/" }); this.setState({ "flash": res.flash }); },
-                err => this.setState({ "flash": err.flash })
-            );
+            .then(res => {
+                if (res.ok) this.setState({ redirect: "/" });
+                const isJson = res.headers.get('content-type')?.includes('application/json');
+                if (!isJson) throw new Error(res.statusText);
+                return res.json();
+            })
+            .then(json => {
+                if (json.flash) this.setState({ "flash": json.flash });
+            })
+            .catch(err => this.setState({ "flash": err.toString() }));
     }
 
     render() {
