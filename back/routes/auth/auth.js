@@ -5,6 +5,8 @@ const passport = require('passport');
 const router = express.Router();
 const connection = require('../../helpers/db');
 
+const jwt = require('jsonwebtoken');
+
 router.post('/signup', function (req, res, next) {
     const passwordHash = bcrypt.hashSync(req.body.password, 10);
     connection.query({
@@ -22,7 +24,8 @@ router.post('/signin', function (req, res) {
     passport.authenticate('local', (error, user, info) => {
         if (error) return res.status(500).json({ flash: error.message });
         if (!user) return res.status(400).json({ flash: info.message });
-        return res.json({ user: user });
+        const token = jwt.sign(user, 'your_jwt_secret');
+        return res.json({ user, token });
     })(req, res);
 });
 
