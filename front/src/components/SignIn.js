@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Stack, Snackbar, TextField } from '@mui/material';
+import { Link as RouterLink, Navigate } from 'react-router-dom';
+import { Box, Button, Divider, Link, Stack, Snackbar, TextField } from '@mui/material';
 
 class SignIn extends Component {
     state = {
@@ -32,7 +33,7 @@ class SignIn extends Component {
             })
             .then(res => res.json())
             .then(
-                res => this.setState({ "flash": res.flash }),
+                res => { this.setState({ redirect: "/profile" }); this.setState({ "flash": res.flash }); },
                 err => this.setState({ "flash": err.flash })
             );
     }
@@ -41,7 +42,7 @@ class SignIn extends Component {
         return (
             <div>
                 <h1>Sign in</h1>
-                <Snackbar open={this.state.flash} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} message={this.state.flash} />
+                <Snackbar open={!!this.state.flash} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} message={this.state.flash} />
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <Stack spacing={2} sx={{ width: '90%', maxWidth: 400 }}>
                         <TextField
@@ -65,6 +66,14 @@ class SignIn extends Component {
                         </Button>
                     </Stack>
                 </form>
+                <Divider sx={{ m: 2 }} />
+                <Box>
+                    Don't have an account yet ?{' '}
+                    <Link underline="hover" component={RouterLink} to="/signup">
+                        Sign up
+                    </Link>
+                </Box>
+                {this.state.redirect && <Navigate to={this.state.redirect} />}
             </div>
         );
     }
