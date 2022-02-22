@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link as RouterLink, Navigate } from 'react-router-dom';
-import { Box, Button, Divider, Link, Stack, Snackbar, TextField } from '@mui/material';
+import { Box, Button, Divider, IconButton, Link, Slide, Snackbar, Stack, TextField } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 
 class SignIn extends Component {
     state = {
@@ -45,10 +46,26 @@ class SignIn extends Component {
     }
 
     render() {
+        const closeSnackbarButton = (
+            <IconButton
+                size="small"
+                color="inherit"
+                onClick={() => this.setState({flash: ''})}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        );
+
         return (
             <div>
                 <h1>Sign in</h1>
-                <Snackbar open={!!this.state.flash} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} message={this.state.flash} />
+                <Snackbar
+                    open={!!this.state.flash}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    message={this.state.flash}
+                    TransitionComponent={(props) => <Slide {...props} direction="up" />}
+                    action={closeSnackbarButton}
+                />
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <Stack spacing={2} sx={{ width: '90%', maxWidth: 400 }}>
                         <TextField
