@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const express = require('express');
+const passport = require('passport');
 
 const router = express.Router();
 const connection = require('../../helpers/db');
@@ -15,6 +16,14 @@ router.post('/signup', function (req, res, next) {
         else
             res.status(200).json({ flash: "User has been signed up !" });
     });
+});
+
+router.post('/signin', function (req, res) {
+    passport.authenticate('local', (error, user, info) => {
+        if (error) return res.status(500).json({ flash: error.message });
+        if (!user) return res.status(400).json({ flash: info.message });
+        return res.json({ user: user });
+    })(req, res);
 });
 
 module.exports = router;
